@@ -222,6 +222,12 @@ variable "cloudwatch_log_group_retention_in_days" {
   default     = 90
 }
 
+variable "cloudwatch_log_group_class" {
+  description = "Cloudwatch log storage class type - STANDARD or INFREQUENT_ACCESS, after created, can't changed, see https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/CloudWatch_Logs_Log_Classes.html"
+  type        = string
+  default     = "STANDARD"
+}
+
 variable "cloudwatch_log_group_kms_key_id" {
   description = "If a KMS Key ARN is set, this key will be used to encrypt the corresponding log group. Please be sure that the KMS Key has an appropriate key policy (https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html)"
   type        = string
