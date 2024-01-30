@@ -29,6 +29,7 @@ module "eks" {
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
+  cloudwatch_log_group_class     = "INFREQUENT_ACCESS"
 
   cluster_addons = {
     kube-proxy = {}
