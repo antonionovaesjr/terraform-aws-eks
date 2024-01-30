@@ -5,17 +5,14 @@ provider "aws" {
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-  }
+  token                  = data.aws_eks_cluster_auth.eks.token
 }
 
 data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
+data "aws_eks_cluster_auth" "eks" {
+  name = local.name
+}
 
 locals {
   name            = "ex-${replace(basename(path.cwd), "_", "-")}"
@@ -42,6 +39,7 @@ module "eks" {
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
+  cloudwatch_log_group_class     = "INFREQUENT_ACCESS"
 
   # IPV6
   cluster_ip_family = "ipv6"
@@ -269,7 +267,7 @@ module "eks" {
           min_size     = 2
           max_size     = "-1" # Retains current max size
           desired_size = 2
-          start_time   = "2023-03-05T00:00:00Z"
+          start_time   = "2024-03-05T00:00:00Z"
           end_time     = "2024-03-05T00:00:00Z"
           time_zone    = "Etc/GMT+0"
           recurrence   = "0 0 * * *"
@@ -278,7 +276,7 @@ module "eks" {
           min_size     = 0
           max_size     = "-1" # Retains current max size
           desired_size = 0
-          start_time   = "2023-03-05T12:00:00Z"
+          start_time   = "2024-03-05T12:00:00Z"
           end_time     = "2024-03-05T12:00:00Z"
           time_zone    = "Etc/GMT+0"
           recurrence   = "0 12 * * *"
